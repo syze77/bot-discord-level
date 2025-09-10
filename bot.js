@@ -9,12 +9,12 @@ const TOKEN = process.env.TOKEN;
 const PREFIX = "!";
 const GUILD_ID = "1255647172066545675";
 
-// === Discord Client ===
+//Discord client
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers],
 });
 
-// === Banco de dados ===
+//Banco de dados
 const db = new Database("db.sqlite");
 db.prepare(`
     CREATE TABLE IF NOT EXISTS usuarios (
@@ -24,8 +24,7 @@ db.prepare(`
     )
 `).run();
 
-// === Função: pegar level do perfil GC ===
-// === Função: pegar level do perfil GC ===
+//Pegar level do perfil GC
 async function pegarLevelGC(profileUrl) {
     try {
         const { data } = await axios.get(profileUrl, {
@@ -52,7 +51,7 @@ async function pegarLevelGC(profileUrl) {
 }
 
 
-// === Função: atualizar cargo no Discord ===
+//Atualizar cargo baseado no level
 async function atualizarCargo(member, levelNovo, levelAntigo = null) {
     try {
         const guild = await client.guilds.fetch(GUILD_ID);
@@ -73,12 +72,12 @@ async function atualizarCargo(member, levelNovo, levelAntigo = null) {
     }
 }
 
-// === Bot pronto ===
+//Iniciado 
 client.once("ready", () => {
     console.log(`✅ Logado como ${client.user.tag}`);
 });
 
-// === Comandos ===
+//Comandos
 client.on("messageCreate", async (message) => {
     if (!message.content.startsWith(PREFIX) || message.author.bot) return;
 
