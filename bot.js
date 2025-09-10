@@ -25,18 +25,32 @@ db.prepare(`
 `).run();
 
 // === Função: pegar level do perfil GC ===
+// === Função: pegar level do perfil GC ===
 async function pegarLevelGC(profileUrl) {
     try {
-        const { data } = await axios.get(profileUrl);
+        const { data } = await axios.get(profileUrl, {
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+                "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
+            }
+        });
+
         const $ = cheerio.load(data);
 
         const level = $(".badge-level").first().text().trim();
-        return parseInt(level) || null;
+        if (!level) {
+            console.warn("⚠️ Level não encontrado no perfil:", profileUrl);
+            return null;
+        }
+
+        return parseInt(level);
     } catch (err) {
         console.error("Erro ao buscar perfil:", err.message);
         return null;
     }
 }
+
 
 // === Função: atualizar cargo no Discord ===
 async function atualizarCargo(member, levelNovo, levelAntigo = null) {
